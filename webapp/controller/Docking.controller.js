@@ -310,20 +310,20 @@ onExportPress: function () {
                
                 // Validation of result 
 
-                const sURL = sap.ui.require.toUrl(oData.results);
-                // code block to perform download
-                fetch(sURL)
-                .then((oResponse) => oResponse.blob())
-                .then((oBlob) => {
-                    const sBlobURL = URL.createObjectURL(oBlob);
-                    const oLink = document.createElement('a');
-                    oLink.href = sBlobURL;
-                    oLink.download = sURL.split('/').pop();
-                    oLink.target = '_blank';
-                    document.body.appendChild(oLink);
-                    oLink.click();
-                    document.body.removeChild(oLink);
-                });
+                // const sURL = sap.ui.require.toUrl(oData.results);
+                // // code block to perform download
+                // fetch(sURL)
+                // .then((oResponse) => oResponse.blob())
+                // .then((oBlob) => {
+                //     const sBlobURL = URL.createObjectURL(oBlob);
+                //     const oLink = document.createElement('a');
+                //     oLink.href = sBlobURL;
+                //     oLink.download = sURL.split('/').pop();
+                //     oLink.target = '_blank';
+                //     document.body.appendChild(oLink);
+                //     oLink.click();
+                //     document.body.removeChild(oLink);
+                // });
 
                 MessageBox.success(oData.results[0].Message,{
                     title:"Success"
