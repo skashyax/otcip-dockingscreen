@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: com.intel.otcip.dockingscreen
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: EI1200BAS
+          url: http://deve1.intel.com:8443
+          client: '200'
+        app:
+          name: ZRP_OTC_DOCKSCN
+          description: Docking Screen Application
+          package: ZOTC_DEV
+          transport: EI1K900478
+        exclude:
+          - /test/

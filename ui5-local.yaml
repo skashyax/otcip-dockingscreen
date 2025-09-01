@@ -31,11 +31,6 @@ server:
         ignoreCertError: false
         backend:
           - url: http://deve1.intel.com:8443
-            client: '200'
-            authenticationType: PrincipalPropagation
-            destination: EI1200BAS
-            path: /sap
-          - url: http://deve1.intel.com:8443
             client: '250'
             authenticationType: PrincipalPropagation
             destination: EI1250BAS

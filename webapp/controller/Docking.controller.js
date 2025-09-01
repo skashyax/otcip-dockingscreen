@@ -11,20 +11,22 @@ sap.ui.define([
         sap.ui.getCore().loadLibrary("sap.ui.core");
         jQuery.sap.includeStyleSheet("../css/docking.css");          
         //Data for the docking table and initialize data
+        this.GlobaldDockedModel=this.getOwnerComponent().getModel("GlobalDockedModel"); 
+
         var oTableData = {
             rows: [
            
                 {
-                RMA_NO:  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/RMA"),
-                WAREHOUSE:  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/WarehouseNo"),
-                RmaNoHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/RMA"),
-                WarehouseNo: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/WarehouseNo"),
-                CustomerHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/CustomerName"),
-                OrderDateHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/OrderDate"),
-                ServiceTypeHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/ServiceType"),
-                ReturnReasonHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RetReason"),
-                ExpRetLocationHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RetLoc"),
-                CarrierHdr: this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/Carrier"),
+                RMA_NO:  this.GlobaldDockedModel.getProperty("/RMA"),
+                WAREHOUSE:  this.GlobaldDockedModel.getProperty("/WarehouseNo"),
+                RmaNoHdr: this.GlobaldDockedModel.getProperty("/RMA"),
+                WarehouseNo: this.GlobaldDockedModel.getProperty("/WarehouseNo"),
+                CustomerHdr: this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/CustomerName"),
+                OrderDateHdr: this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/OrderDate"),
+                ServiceTypeHdr: this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/ServiceType"),
+                ReturnReasonHdr: this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RetReason"),
+                ExpRetLocationHdr: this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RetLoc"),
+                CarrierHdr: this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/Carrier"),
                 Uom: "",
                 Quantity: "",
                 DamageInd: "",
@@ -49,6 +51,8 @@ sap.ui.define([
                 oDP.setMaxDate(new Date());
             }
         }, 1000);
+
+        
         },
         
         // Method to add row on docking panel
@@ -58,16 +62,16 @@ sap.ui.define([
         var oData = oTableModel.getData();
 
         var oNewRow = {
-                    "RMA_NO":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RMA"),
-                    "WAREHOUSE":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/WarehouseNo"),
-                    "RmaNoHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RMA"),
-                    "WarehouseNo": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/WarehouseNo"),
-                    "CustomerHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/CustomerName"),
-                    "OrderDateHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/OrderDate"),
-                    "ServiceTypeHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/ServiceType"),
-                    "ReturnReasonHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RetReason"),
-                    "ExpRetLocationHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RetLoc"),
-                    "CarrierHdr": this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/Carrier"),
+                    "RMA_NO":  this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RMA"),
+                    "WAREHOUSE":  this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/WarehouseNo"),
+                    "RmaNoHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RMA"),
+                    "WarehouseNo": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/WarehouseNo"),
+                    "CustomerHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/CustomerName"),
+                    "OrderDateHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/OrderDate"),
+                    "ServiceTypeHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/ServiceType"),
+                    "ReturnReasonHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RetReason"),
+                    "ExpRetLocationHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RetLoc"),
+                    "CarrierHdr": this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/Carrier"),
                     "Text1": "",
                     "Text2": "",
                     "WayBillNum": "",
@@ -90,6 +94,7 @@ sap.ui.define([
 // On save button press and call backend
 
 onSavePress: function() {
+
     var oTableModel = this.getView().getModel("tableModel");
     var aRows = oTableModel.getProperty("/rows");
     var bValid = true;
@@ -109,6 +114,7 @@ onSavePress: function() {
     }
 
     if (bValid) {
+        this.GlobaldDockedModel.setProperty("/save",true);
         this.callAction4OData("SAVE");
     } else {
         MessageBox.error("Please fill Unit or measure and Quantity for all rows. Missing data in row(s): " + aInvalidRows.join(", "), {
@@ -141,6 +147,7 @@ for (var i = 0; i < aRows.length; i++) {
 }
 
 if (bValid) {
+    this.GlobaldDockedModel.setProperty("/save",false);
     this.callAction4OData("CONFIRMED");
 } else {
     MessageBox.error("Please fill Unit or measure and Quantity for all rows. Missing data in row(s): " + aInvalidRows.join(", "), {
@@ -152,8 +159,8 @@ if (bValid) {
 
 // Save edited items in already docked
 
-onDockedEditSavePress: function() {
-    var oModel = this.getOwnerComponent().getModel("GlobalDockedModel");
+onDockedSaveConfirmPress: function() {
+    var oModel = this.GlobaldDockedModel;
     // Here, you can process/save the data as needed
     oModel.setProperty("/editMode", false);
 
@@ -162,7 +169,7 @@ onDockedEditSavePress: function() {
     var aSelectedData = [];
 
     if (aSelectedItems.length === 0) {
-        sap.m.MessageBox.warning("Please select at least one row to save.");
+        sap.m.MessageBox.warning("Please select at least one row to save and confirm.");
         return;
     }
 
@@ -171,10 +178,12 @@ onDockedEditSavePress: function() {
         var oContext = oItem.getBindingContext("GlobalDockedModel");
         var oRowData = oContext.getObject();
         aSelectedData.push(oRowData);
-        this.getView().getModel("tableModel").setProperty("/rows",aSelectedData)
+        this.getView().getModel("tableModel").setProperty("/rows",aSelectedData);
+        this.GlobaldDockedModel.setProperty("/save",false);
+        this.callAction4OData("CONFIRMED");
     });
 
-    this.callAction4OData("CONFIRMED");
+    
 
 },
 
@@ -195,7 +204,7 @@ onSelectAsset(oEvent) {
  // Cancel edited items in already docked
 
 onDockedEditCancelPress: function() {
-    var oModel = this.getOwnerComponent().getModel("GlobalDockedModel");
+    var oModel = this.GlobaldDockedModel;
     oModel.setProperty("/editMode", false);
 },
 
@@ -203,7 +212,7 @@ onDockedEditCancelPress: function() {
 
 onDockedEditPress: function() {
 
-    var oModel = this.getOwnerComponent().getModel("GlobalDockedModel");
+    var oModel = this.GlobaldDockedModel;
     // Set the edit mode to true to enable editing
     oModel.setProperty("/editMode", true);
 },
@@ -233,8 +242,8 @@ callAction4OData: function (status) {
     oModel.submitChanges({
         groupId: "batchCallActionId",
         success: function (oData) {
-            this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/AlreadyDockedDetails",oData.__batchResponses[0].__changeResponses[0].data.results);
-            this.getOwnerComponent().getModel("GlobalDockedModel").refresh();
+            this.GlobaldDockedModel.setProperty("/AlreadyDockedDetails",oData.__batchResponses[0].__changeResponses[0].data.results);
+            this.GlobaldDockedModel.refresh();
             MessageBox.success("Records Successfully Updated", {
                 title: "Success"
             });
@@ -275,7 +284,7 @@ onDeleteRowPress: function(oEvent) {
 onSectionChange: function(oEvent) {
    
     var oSection = oEvent.getParameter("section");
-    var oModel = this.getOwnerComponent().getModel("GlobalDockedModel");
+    var oModel = this.GlobaldDockedModel;
     oModel.setProperty("/selectedSection", oSection.getId());
 },
 
@@ -285,10 +294,10 @@ onExportPress: function () {
 
     var oModel= this.getOwnerComponent().getModel();
     var oPayload={
-        "RMA_NO":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RMA"),
-        "WAREHOUSE":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/WarehouseNo"),
-        "RmaNo":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/RMA"),
-        "WarehouseNo":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/DockedHeaderDetails/WarehouseNo"),
+        "RMA_NO":  this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RMA"),
+        "WAREHOUSE":  this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/WarehouseNo"),
+        "RmaNo":  this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/RMA"),
+        "WarehouseNo":  this.GlobaldDockedModel.getProperty("/DockedHeaderDetails/WarehouseNo"),
       
     }
 
@@ -339,94 +348,6 @@ onExportPress: function () {
         });
 },
 
-// Function triggered when file is uploaded from browse
 
-// onFileChange: function (oEvent) {
-//     var oObject = oEvent.getSource().getBindingContext("tableModel").getObject();
-    
-//     var file = oEvent.getParameter("files")[0];
-//     oObject.FileName = oEvent.getParameter("files")[0].name;
-//     var fileReader = new FileReader();
-//     var readFile = function onReadFile(file) {
-//         return new Promise(function (resolve) {
-//             fileReader.onload = function (loadEvent) {
-//             resolve(loadEvent.target.result.match(/,(.*)$/)[1]);
-//             };
-//         fileReader.readAsDataURL(file);
-//         });
-//     };
-//     var readContent = readFile(file);
-
-//     readContent.then((result) => {
-//         oObject.FileContent = result;
-//     });
-// },
-
-// Function triggered when Upload button is clicked in BulkUpload.
-        //--------------------------------------------------------------------------------
-        // onPressUpload: function () {
-        //     let oModel = this.getView().getModel(),
-        //         oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-        //      let oFileUploader = this.byId("tableModel").getContent()[2].getItems()[1];
-
-        //     if (oFileUploader.files.length === 0) {
-        //         let sMessage = oBundle.getText("fileMissingError");
-        //         MessageBox.error(sMessage, {
-        //             dependentOn: this.getView()
-        //         });
-        //         this.getView().setBusy(false);
-        //         return;
-        //     }
- 
-        //     //Uploaded file type and name
-        //     var fileType = oFileUploader.oFileUpload.files[0].type;
-        //     var fileName = oFileUploader.oFileUpload.files[0].name;
- 
-        //     //if file type is .xlsx
-        //     if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
- 
-        //         oModel.callFunction("/ActionForUpload", // function import name
-        //             {
-        //                 method: "POST",
-        //                 urlParameters: {
-                      
-        //                     "Filename": fileName,
-        //                     "Attachment": fileContent,
-        //                     "Mimetype": fileType,
- 
-        //                 },
- 
-        //                 // callback function for success
-        //                 success: function (oData, response) {
-        //                     var responseData = JSON.parse(response.headers['sap-message']);
-        //                     var responseType = responseData.severity;
-        //                     var responseMsg = responseData.message;
-        //                     //var sMessage = oBundle.getText(responseType);
- 
-        //                     if (responseType = 'error' ) {
-        //                         MessageBox.error(responseMsg);
-        //                     } else {
-        //                         MessageBox.success(responseMsg);
-        //                     }
-        //                 }.bind(this),
- 
-        //                 // callback function for error
-        //                 error: function (oError) {
-        //                     try {
-        //                         var errorResponse = JSON.parse(oError.responseText);
-        //                         var errorMessage = errorResponse.error.message.value;
- 
-        //                         MessageBox.error(errorMessage);
-        //                     } catch (e) {
-        //                         MessageBox.error(oError.responseText); //"An error occurred while processing the error message."
-        //                     } finally {
-        //                         this.getView().setBusy(false);
-        //                     }
- 
-        //                 }.bind(this)
-        //             });
-        //     }
-        //     this.byId("tableModel").close();
-        // },
 	
 })});

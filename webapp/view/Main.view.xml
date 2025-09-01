@@ -5,7 +5,7 @@
         xmlns:core="sap.ui.core"
         height="100%"
     xmlns="sap.m">
-     <Panel headerText="Warehouse Entry" class="sapUiResponsiveMargin" width="auto" expandable="false" backgroundDesign="Translucent">
+     <Panel headerText="{i18n>homeTitle}" class="sapUiResponsiveMargin" width="auto" expandable="false" backgroundDesign="Translucent">
                 <content>
                     <VBox width="auto" justifyContent="SpaceBetween" class="sapUiSmallMargin">
                      
@@ -19,13 +19,7 @@
                         
                         <HBox>
                         <Input id="rmaInputId" placeholder="{i18n>rmaPlaceholder}" showValueHelp="true" valueHelpRequest="onRmaValueHelp" liveChange="onRMALiveChange" required="true" value="{GlobalDockedModel>/RMA}" maxLength="10" />
-                        <!-- <ndc:BarcodeScannerButton
-                            id="sampleBarcodeScannerButton"
-                            scanSuccess="onScanSuccess"
-                            scanFail="onScanError"
-                            inputLiveUpdate="onScanLiveupdate"
-                            dialogTitle="Barcode Scanner Button Sample"
-                        /> -->
+                     
                         </HBox>
                          
                         <HBox class="sapUiSmallMarginTop" justifyContent="End">

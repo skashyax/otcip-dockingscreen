@@ -13,7 +13,7 @@
     >
         <ColumnListItem>
             <cells>
-                <Text text="{RMANO}" />
+                <Text text="{RmaNumber}" />
             </cells>
         </ColumnListItem>
         <columns>

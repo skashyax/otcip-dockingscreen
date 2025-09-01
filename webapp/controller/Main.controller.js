@@ -8,7 +8,7 @@ sap.ui.define([
 ], (Controller, Fragment, Element, MessageToast, MessageBox) => {
     "use strict";
 
-        
+       
 		var oScanResultText;
 
     return Controller.extend("com.intel.otcip.dockingscreen.controller.Main", {
@@ -21,6 +21,7 @@ sap.ui.define([
             submitEnabled: false,
             editMode: false,
             selectedSection:"",
+            save:false,
             yesNo: [
                         { key: "YES", text: "Yes" },
                         { key: "NO", text: "No" }
@@ -29,7 +30,7 @@ sap.ui.define([
         };
          var oHeaderModel = new sap.ui.model.json.JSONModel(oHeaderData);
          this.getOwnerComponent().setModel(oHeaderModel, "GlobalDockedModel"); //Global model to hold RMA header data
-
+        this.GlobaldDockedModel=this.getOwnerComponent().getModel("GlobalDockedModel");
         oScanResultText = this.byId("scanManualRmaNo"); // RMA input field
         
     },
@@ -37,27 +38,32 @@ sap.ui.define([
     //Method to capture RMA input change
 
     onRMALiveChange: function(oEvent){
-         this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/RMA",oEvent.getParameter("value"));
+         this.GlobaldDockedModel.setProperty("/RMA",oEvent.getParameter("value"));
         this.setSubmitButtonEnabled();
     },
-    
+
+    onRMAVHSelected:function(oEvent){
+      var oObjectSelected = oEvent.getParameter("selectedItem").getBindingContext().getObject();
+    this.GlobaldDockedModel.setProperty("/RMA", oObjectSelected.RmaNumber);
+    this.setSubmitButtonEnabled();
+    },
     //Method to capture warehouse no. input change
 
     onWarehouseChange: function(oEvent){
-
+        this.GlobaldDockedModel.setProperty("/WarehouseNo",oEvent.getParameter("value"));
         this.setSubmitButtonEnabled();
     },
 
     // Method to check validation of RMA and warehouse no.
 
     setSubmitButtonEnabled: function(){
-         this.getOwnerComponent().getModel("GlobalDockedModel").refresh();
-        if ( this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/RMA") &&  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/WarehouseNo")){
-             this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/submitEnabled",true);
+         this.GlobaldDockedModel.refresh();
+        if ( this.GlobaldDockedModel.getProperty("/RMA") &&  this.GlobaldDockedModel.getProperty("/WarehouseNo")){
+             this.GlobaldDockedModel.setProperty("/submitEnabled",true);
         }else{
-             this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/submitEnabled",false);
+             this.GlobaldDockedModel.setProperty("/submitEnabled",false);
         }
-         this.getOwnerComponent().getModel("GlobalDockedModel").refresh();
+         this.GlobaldDockedModel.refresh();
     },
 
     //Method for F4 help for RMA no.
@@ -81,10 +87,10 @@ sap.ui.define([
              
                 var oModel= this.getOwnerComponent().getModel();
                 var oPayload={
-                    "RMA_NO":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/RMA"),
-                    "WAREHOUSE":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/WarehouseNo"),
-                    "RmaNo":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/RMA"),
-                    "WarehouseNo":  this.getOwnerComponent().getModel("GlobalDockedModel").getProperty("/WarehouseNo"),
+                    "RMA_NO":  this.GlobaldDockedModel.getProperty("/RMA"),
+                    "WAREHOUSE":  this.GlobaldDockedModel.getProperty("/WarehouseNo"),
+                    "RmaNo":  this.GlobaldDockedModel.getProperty("/RMA"),
+                    "WarehouseNo":  this.GlobaldDockedModel.getProperty("/WarehouseNo"),
                   
                 }
             
@@ -94,19 +100,17 @@ sap.ui.define([
                         urlParameters: oPayload,
                         // callback function for success
                         success: function (oData, response) {
-                            console.log(oData)
-                            this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/AlreadyDockedDetails",{});
-                            this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/AlreadyDockedDetails",oData.results);
+                          
+                            this.GlobaldDockedModel.setProperty("/AlreadyDockedDetails",{});
+                            this.GlobaldDockedModel.setProperty("/AlreadyDockedDetails",oData.results);
 
                             // Validation of result 
 
-                            // if(oData.results[0].Message.includes("Invalid")){
-                            //     MessageBox.error(oData.results[0].Message);
-                            //     return;
-                            // }
-                            if (oData.results.length < 1) {
-                                //message and return
+                            if(oData.results[0].Message.includes("Invalid")){
+                                MessageBox.error(oData.results[0].Message);
+                                return;
                             }
+                           
                             var headerDetail = {
                                 
                                 "WarehouseNo": oData.results[0].WarehouseNoHdr,
@@ -121,9 +125,9 @@ sap.ui.define([
     
                             }
     
-                            this.getOwnerComponent().getModel("GlobalDockedModel").setProperty("/DockedHeaderDetails", headerDetail);
+                            this.GlobaldDockedModel.setProperty("/DockedHeaderDetails", headerDetail);
     
-                            this.getOwnerComponent().getModel("GlobalDockedModel").refresh();
+                            this.GlobaldDockedModel.refresh();
                             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                             oRouter.navTo("Docking", {});
                         }.bind(this),

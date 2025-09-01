@@ -39,8 +39,8 @@
 
                     <m:HBox>
                     <m:ObjectAttribute title="{i18n>cName}" visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} === 'IMF' }" text="{GlobalDockedModel>/DockedHeaderDetails/Carrier}" />
-                    <m:HBox  visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} !== 'IMF' }">
-                        <m:Label text="{i18n>cName}:" class="sapUiTinyMarginTop"/>
+                    <m:HBox alignItems="Center"  visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} !== 'IMF' }">
+                        <m:Label text="{i18n>cName}" showColon="true" class="sapUiTinyMarginTop"/>
                         <m:ComboBox
                         class="sapUiSizeCompact"
                         selectedKey="{GlobalDockedModel>/DockedHeaderDetails/Carrier}"
@@ -79,7 +79,7 @@
                                     </m:HBox>
                                      <m:HBox>
                                      <!-- Add and Delete Row Buttons -->
-                                            <m:Button icon="sap-icon://add" text="{i18n>addRow}" type="Emphasized" press="onAddRowPress"/>
+                                            <m:Button icon="sap-icon://add" text="{i18n>addRow}" type="Default" press="onAddRowPress"/>
                                             <m:Button icon="sap-icon://delete" text="{i18n>deleteRow}" type="Default" press="onDeleteRowPress"  class="sapUiSmallMarginBegin"/>
                                         </m:HBox>
                                         </m:HBox>
@@ -155,23 +155,7 @@
                                             <core:Item key="{BinLocation}" text="{BinLocation}" />
                                         </m:ComboBox>
                                         
-                                        <!-- File Uploader -->
-                                         <!-- <l:HorizontalLayout>
-                                         	<u:FileUploader
-                                                id="fileUpload"
-                                                buttonText="Browse"
-                                                style="Emphasized"
-                                                name="myFileUpload"
-                                                tooltip="{i18n>ploadTooltip}"
-                                                sameFilenameAllowed="true"
-                                                sendXHR="true"
-                                                useMultipart="false"
-                                                change="onFileChange"
-                                               />
-                                        </l:HorizontalLayout>
-                                            <m:Button
-                                                text="{i18n>uploadFile}"
-                                                press="onPressUpload"/> -->
+                                       
                                     </m:cells>
                                 </m:ColumnListItem>
                             </m:items>
@@ -207,12 +191,12 @@
                                     </m:HBox>
                                         <m:HBox >
                                          <!-- Edit Button (visible when editMode false) -->
-                                            <m:Button text="{i18n>edit}" icon="sap-icon://edit" type="Emphasized" press="onDockedEditPress" visible="{= !${GlobalDockedModel>/editMode} }"/>
+                                            <m:Button text="{i18n>edit}" icon="sap-icon://edit" type="Default" press="onDockedEditPress" visible="{= !${GlobalDockedModel>/editMode} }"/>
                                             <!-- Save Button (visible when editMode true) -->
-                                            <m:Button text="{i18n>saveConfirm}" type="Emphasized" press="onDockedEditSavePress" visible="{= ${GlobalDockedModel>/editMode} }"/>
+                                            <m:Button text="{i18n>saveConfirm}" type="Emphasized" press="onDockedSaveConfirmPress" visible="{= ${GlobalDockedModel>/editMode} }"/>
                                             <!-- Cancel Button (visible when editMode true) -->
                                             <m:Button text="{i18n>cancel}" type="Default" press="onDockedEditCancelPress" class="sapUiSmallMarginBegin" visible="{= ${GlobalDockedModel>/editMode} }"/>
-                                            <m:Button text="{i18n>export}" type="Default" press="onExportPress" class="sapUiSmallMarginBegin"/>
+                                            <m:Button text="{i18n>export}" type="Emphasized" press="onExportPress" class="sapUiSmallMarginBegin"/>
                                             </m:HBox>
                                         </m:HBox>
                                 </m:Toolbar>
@@ -308,7 +292,7 @@
             <m:OverflowToolbar visible="{= ${GlobalDockedModel>/selectedSection} === '__section1' }">
                 <m:ToolbarSpacer/>
                 <m:Button type="Accept" text="{i18n>save}" press="onSavePress"/>
-                <m:Button type="Emphasized" text="{i18n>confirm}" press="onConfirmPress"/>
+                <m:Button type="Emphasized" text="{i18n>confirm}" enabled="{= ${GlobalDockedModel>/save} }" press="onConfirmPress"/>
             </m:OverflowToolbar>
         </footer>
 	</ObjectPageLayout>
