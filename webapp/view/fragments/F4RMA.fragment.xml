@@ -8,12 +8,12 @@
         search=".handleVHRMASearch"
         confirm=".onRMAVHSelected"
         cancel=".handleValueHelpClose"
-        items="{ path : '/ZCDS_I_OTC_DCSCRN_RMAVH'}"
+        items="{ path : 'F4JSONModel>/RMA_NO'}"
         searchPlaceholder=""
     >
         <ColumnListItem>
             <cells>
-                <Text text="{RmaNumber}" />
+                <Text text="{F4JSONModel>RMA_NO}" />
             </cells>
         </ColumnListItem>
         <columns>

@@ -94,6 +94,9 @@
         "type": "View",
         "viewType": "XML",
         "path": "com.intel.otcip.dockingscreen.view",
+        "bypassed": {
+          "target": "notFound"
+        },
         "async": true,
         "viewPath": "com.intel.otcip.dockingscreen.view"
       },
@@ -120,6 +123,11 @@
           "id": "Docking",
           "name": "Docking",
           "clearControlAggregation": false
+        },
+        "notFound": {
+          "id": "notFound",
+          "name": "NotFound",
+          "transition": "show"
         }
       }
     },

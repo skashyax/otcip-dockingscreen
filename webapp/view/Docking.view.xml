@@ -1,299 +1,592 @@
-<mvc:View controllerName="com.intel.otcip.dockingscreen.controller.Docking"
-    	displayBlock="true"
-        xmlns:mvc="sap.ui.core.mvc"
-		xmlns:l="sap.ui.layout"
-		xmlns:core="sap.ui.core"
-		xmlns="sap.uxap"
-        xmlns:u="sap.ui.unified"
-        height="100%"
-    xmlns:m="sap.m">
-	<ObjectPageLayout
-     id="ObjectPageLayout"
-    upperCaseAnchorBar="false"
-    useIconTabBar="true"
-    showFooter="true"
-    sectionChange="onSectionChange"
-   >
-		<headerTitle>
-			<ObjectPageHeader objectTitle="{i18n>headerTitle}">
-			</ObjectPageHeader>
-		</headerTitle>
+<mvc:View
+    controllerName="com.intel.otcip.dockingscreen.controller.Docking"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.uxap"
+    xmlns:u="sap.ui.unified"
+    height="100%"
+    xmlns:m="sap.m"
+    	xmlns:smartTable="sap.ui.comp.smarttable"
+>
+    <ObjectPageLayout
+        id="ObjectPageLayout"
+        upperCaseAnchorBar="false"
+        useIconTabBar="true"
+        showFooter="true"
+        sectionChange="onSectionChange"
+    >
+        <headerTitle>
+            <ObjectPageHeader objectTitle="{i18n>headerTitle}" />
+        </headerTitle>
         <!-- Header Details -->
-		<headerContent>
-        	<l:Grid defaultSpan="XL4 L6 M6 S12" class="sapUiSmallMargin">
-            
-                   
-                    <m:ObjectAttribute class="boldObjectAttributeTitle" title="{i18n>RMANo}" text="{GlobalDockedModel>/DockedHeaderDetails/RMA}" />
+        <headerContent>
+            <l:Grid
+                defaultSpan="XL4 L6 M6 S12"
+                class="sapUiSmallMargin"
+            >
+                <m:ObjectAttribute
+                    title="{i18n>RMANo}"
+                    text="{GlobalDockedModel>/DockedHeaderDetails/RMA}"
+                />
 
-                    <m:ObjectAttribute title="{i18n>customerN}" text="{GlobalDockedModel>/DockedHeaderDetails/CustomerName}" />
+                <m:ObjectAttribute
+                    title="{i18n>customerN}"
+                    text="{GlobalDockedModel>/DockedHeaderDetails/CustomerName}"
+                />
 
-                    <m:ObjectAttribute title="{i18n>orderDate}" text="{GlobalDockedModel>/DockedHeaderDetails/OrderDate}" />
+                <m:ObjectAttribute
+                    title="{i18n>orderDate}"
+                    text="{GlobalDockedModel>/DockedHeaderDetails/OrderDate}"
+                />
 
-                    <m:ObjectAttribute title="{i18n>retReason}" text="{GlobalDockedModel>/DockedHeaderDetails/RetReason}" />
+                <m:ObjectAttribute
+                    title="{i18n>retReason}"
+                    text="{GlobalDockedModel>/DockedHeaderDetails/RetReason}"
+                />
 
-                    <m:ObjectAttribute title="{i18n>sType}" text="{GlobalDockedModel>/DockedHeaderDetails/ServiceType}" />
+                <m:ObjectAttribute
+                    title="{i18n>sType}"
+                    text="{GlobalDockedModel>/DockedHeaderDetails/ServiceType}"
+                />
 
-                    <m:ObjectAttribute title="{i18n>exRetLoc}" text="{GlobalDockedModel>/DockedHeaderDetails/RetLoc}" />
-                    
-                    <!-- Carrier Name Text or Input based on CarrierStatus -->
+                <m:ObjectAttribute
+                    title="{i18n>exRetLoc}"
+                    text="{GlobalDockedModel>/DockedHeaderDetails/RetLoc}"
+                />
 
-                    <m:HBox>
-                    <m:ObjectAttribute title="{i18n>cName}" visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} === 'IMF' }" text="{GlobalDockedModel>/DockedHeaderDetails/Carrier}" />
-                    <m:HBox alignItems="Center"  visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} !== 'IMF' }">
-                        <m:Label text="{i18n>cName}" showColon="true" class="sapUiTinyMarginTop"/>
+                <!-- Carrier Name Text or Input based on CarrierStatus -->
+
+                <m:HBox>
+                    <m:ObjectAttribute
+                        title="{i18n>cName}"
+                        visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} === 'IMF' }"
+                        text="{GlobalDockedModel>/DockedHeaderDetails/Carrier}"
+                    />
+                    <m:HBox
+                        alignItems="Center"
+                        visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} !== 'IMF' }"
+                    >
+                        <m:Label
+                            text="{i18n>cName}"
+                            showColon="true"
+                            class=""
+                        />
                         <m:ComboBox
-                        class="sapUiSizeCompact"
-                        selectedKey="{GlobalDockedModel>/DockedHeaderDetails/Carrier}"
-                            items="{path: 'ZCDS_I_OTC_DCSCRN_CARIR_VAL'}">
-                            <core:Item key="{CarrierHdr}" text="{CarrierHdr}" />
+                            class="sapUiSizeCompact sapUiTinyMarginBegin"
+                            selectedKey="{GlobalDockedModel>/DockedHeaderDetails/Carrier}"
+                            items="{path: 'F4JSONModel>/CARRIER_NO'}"
+                        >
+                            <core:Item
+                                key="{F4JSONModel>value1}"
+                                text="{F4JSONModel>value1}"
+                            />
                         </m:ComboBox>
                     </m:HBox>
-                   </m:HBox>
-
+                </m:HBox>
             </l:Grid>
-		</headerContent>
-       
-		<sections>
-			<ObjectPageSection titleUppercase="false" >
-             <!-- New Docking -->
-				 <subSections >
-					<ObjectPageSubSection titleUppercase="false" title="{i18n>dockingTitle}"> 
-                    <blocks >
-                    <m:VBox>
-                    <m:Table    
-                    
-                            id="idDockingTable"
-                            sticky="HeaderToolbar,ColumnHeaders"
-                            inset="false"
-                            mode="MultiSelect"
-                            width="auto"
-                            items="{
+        </headerContent>
+
+        <sections>
+            <ObjectPageSection titleUppercase="false">
+                <!-- New Docking -->
+                <subSections>
+                    <ObjectPageSubSection
+                        titleUppercase="false"
+                        title="{i18n>dockingTitle}"
+                    >
+                        <blocks>
+                            <m:VBox>
+                                <m:ScrollContainer
+                                    horizontal="true"
+                                    vertical="false"
+                                    width="100%"
+                                    height="auto"
+                                >
+                                    <m:Table
+                                        growing="true"
+                                        growingScrollToLoad="true"
+                                        fixedLayout="false"
+                                        class="sapUiTableHorizontalScroll"
+                                        id="idDockingTable"
+                                        sticky="HeaderToolbar,ColumnHeaders"
+                                        inset="false"
+                                        mode="MultiSelect"
+                                        width="auto"
+                                        items="{
                                 path: 'tableModel>/rows'
-                            }">
+                            }"
+                                    >
+                                        <m:headerToolbar>
+                                            <m:Toolbar>
+                                                <m:HBox
+                                                    justifyContent="SpaceBetween"
+                                                    alignItems="Center"
+                                                    width="100%"
+                                                >
+                                                    <m:HBox>
+                                                        <m:Title
+                                                            text="{i18n>dockingTitle}"
+                                                            level="H2"
+                                                        />
+                                                    </m:HBox>
+                                                    <m:HBox>
+                                                        <!-- Add and Delete Row Buttons -->
+                                                        <m:Button
+                                                            icon="sap-icon://add"
+                                                            text="{i18n>addRow}"
+                                                            type="Default"
+                                                            press="onAddRowPress"
+                                                        />
+                                                        <m:Button
+                                                            icon="sap-icon://delete"
+                                                            text="{i18n>deleteRow}"
+                                                            type="Default"
+                                                            press="onDeleteRowPress"
+                                                            class="sapUiSmallMarginBegin"
+                                                        />
+                                                    </m:HBox>
+                                                </m:HBox>
+                                            </m:Toolbar>
+                                        </m:headerToolbar>
 
-                            <m:headerToolbar>
-                                <m:Toolbar>
-                                        <m:HBox justifyContent="SpaceBetween" alignItems="Center" width="100%">
-                                        <m:HBox>
-                                    <m:Title text="{i18n>dockingTitle}" level="H2"/>
-                                    </m:HBox>
-                                     <m:HBox>
-                                     <!-- Add and Delete Row Buttons -->
-                                            <m:Button icon="sap-icon://add" text="{i18n>addRow}" type="Default" press="onAddRowPress"/>
-                                            <m:Button icon="sap-icon://delete" text="{i18n>deleteRow}" type="Default" press="onDeleteRowPress"  class="sapUiSmallMarginBegin"/>
-                                        </m:HBox>
-                                        </m:HBox>
-                                </m:Toolbar>
-                            </m:headerToolbar>
+                                        <m:columns>
+                                            <m:Column>
+                                                <m:HBox width="8em">
+                                                    <m:Text
+                                                        text="{i18n>wayBillNo}"
+                                                    />
+                                                    <m:ObjectStatus
+                                                        state="Error"
+                                                        text="*"
+                                                        class="sapUiTinyMarginBegin"
+                                                        visible="{= ${GlobalDockedModel>/DockedHeaderDetails/Carrier} !== '' }"
+                                                    />
+                                                </m:HBox>
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:HBox width="5em">
+                                                    <m:Text text="{i18n>qty}" />
+                                                    <m:ObjectStatus
+                                                        state="Error"
+                                                        text="*"
+                                                        class="sapUiTinyMarginBegin"
+                                                    />
+                                                </m:HBox>
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:HBox width="8em">
+                                                    <m:Text
+                                                        text="{i18n>unit}"
+                                                    />
+                                                    <m:ObjectStatus
+                                                        state="Error"
+                                                        text="*"
+                                                        class="sapUiTinyMarginBegin"
+                                                    />
+                                                </m:HBox>
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="4em"
+                                                    text="{i18n>damage}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="8em"
+                                                    text="{i18n>damageReason}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="7em"
+                                                    text="{i18n>binLocation}"
+                                                />
+                                            </m:Column>
+                                        </m:columns>
 
-                            <m:columns>
-                                 <m:Column>
-                                  <m:HBox>
-                                    <m:Text text="{i18n>wayBillNo}" />
-                                    <m:ObjectStatus
-                                        state="Error"
-                                        text="*"
-                                        class="sapUiTinyMarginBegin"
-                                        visible="{= ${GlobalDockedModel>/DockedHeaderDetails/Carrier} !== '' }"
-                                        />
-                                        
-                                         </m:HBox>
-                                </m:Column>
-                                <m:Column>
-                                 <m:HBox>
-                                    <m:Text text="{i18n>qty}" />
-                                   <m:ObjectStatus
-                                        state="Error"
-                                        text="*"
-                                        class="sapUiTinyMarginBegin"
-                                        />
-                                         </m:HBox>
-                                </m:Column>
-                                <m:Column>
-                                 <m:HBox>
-                                    <m:Text text="{i18n>unit}" />
-                                   <m:ObjectStatus
-                                        state="Error"
-                                        text="*"
-                                        class="sapUiTinyMarginBegin"
-                                        />
-                                         </m:HBox>
-                                </m:Column>
-                                <m:Column><m:Text text="{i18n>damage}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>damageReason}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>binLocation}" /></m:Column>
-                             
-                            </m:columns>
+                                        <m:items>
+                                            <m:ColumnListItem>
+                                                <m:cells>
+                                                    <!-- Way Bill No. Input Field -->
+                                                    <m:HBox >
+                                                    <m:Input
+                                                        visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} !== 'IMF' }"
+                                                        value="{tableModel>WayBillNum}"
+                                                        placeholder="{i18n>wayBillNo}"
+                                                    />
+                                                    
+                                                    <m:HBox
+                                                        alignItems="Center"
+                                                        visible="{= ${GlobalDockedModel>/DockedHeaderDetails/CarrierStatus} === 'IMF' }"
+                                                    >
+                                                        <m:ComboBox
+                                                            
+                                                            selectedKey="{tableModel>WayBillNum}"
+                                                            items="{path: '/WaybillValueHelp'}"
+                                                        >
+                                                            <core:Item
+                                                                key="{WaybillNumber}"
+                                                                text="{WaybillNumber}"
+                                                            />
+                                                        </m:ComboBox>
+                                                    </m:HBox>
+                                                    </m:HBox>
 
-                            <m:items>
-                                <m:ColumnListItem>
-                                    <m:cells>
-                                        <!-- Way Bill No. Input Field -->
-                                        <m:Input value="{tableModel>WayBillNum}" placeholder="{i18n>wayBillNo}" />
+                                                    <!-- Quantity Input Field -->
+                                                    <m:Input
+                                                        value="{tableModel>Quantity}"
+                                                        placeholder="{i18n>qty}"
+                                                    />
+                                                    <!-- Unit of Measure Dropdown -->
+                                                    <m:ComboBox
+                                                        change="onUOMChange"
+                                                        value="{tableModel>Uom}"
+                                                        selectedKey="{tableModel>Uom}"
+                                                        items="{path: 'F4JSONModel>/UOM'}"
+                                                    >
+                                                        <core:Item
+                                                            key="{F4JSONModel>value1}"
+                                                            text="{F4JSONModel>value1}"
+                                                        />
+                                                    </m:ComboBox>
 
-                                        <!-- Quantity Input Field -->
-                                        <m:Input value="{tableModel>Quantity}" placeholder="{i18n>qty}" />
-                                        <!-- Unit of Measure Dropdown -->
-                                         <m:ComboBox change="onUOMChange" value="{tableModel>Uom}" selectedKey="{tableModel>Uom}" items="{path: '/ZCDS_I_OTC_DCSCRN_UOM'}">
-                                            <core:Item key="{Uom}" text="{Uom}" />
-                                        </m:ComboBox>
-                                      
-                                        <!-- Damage Dropdown -->
-                                        <m:Select
-                                            selectedKey="{tableModel>DamageInd}"
-                                            items="{
-                                                path: 'GlobalDockedModel>/yesNo'
-                                            }">
-                                            <core:Item key="{GlobalDockedModel>key}"  text="{GlobalDockedModel>text}" />
-                                        </m:Select>
-                                        <!-- Damage Reason Dropdown -->
-                                         <m:ComboBox change="onDamageReasonChange" value="{tableModel>ResnForDamage}" selectedKey="{tableModel>ResnForDamage}" items="{path: '/ZCDS_I_OTC_DCSCRN_DMGREASON'}">
-                                            <core:Item key="{damageReason}" text="{damageReason}" />
-                                        </m:ComboBox>
-                                        <!-- Bin Location Input Field -->
-                                         <m:ComboBox change="onBinLocationChange" value="{tableModel>BinLocation}" selectedKey="{tableModel>BinLocation}" items="{path: '/ZCDS_I_OTC_BINLOCTN'}">
-                                            <core:Item key="{BinLocation}" text="{BinLocation}" />
-                                        </m:ComboBox>
-                                        
-                                       
-                                    </m:cells>
-                                </m:ColumnListItem>
-                            </m:items>
-                </m:Table>
+                                                    <!-- Damage Dropdown -->
+                                                    <m:Select
+                                                        selectedKey="{tableModel>DamageInd}"
+                                                        items="{
+                                                path: 'tableModel>/yesNo'
+                                            }"
+                                                    >
+                                                        <core:Item
+                                                            key="{tableModel>key}"
+                                                            text="{tableModel>text}"
+                                                        />
+                                                    </m:Select>
+                                                    <!-- Damage Reason Dropdown -->
+                                                    <m:ComboBox
+                                                        change="onDamageReasonChange"
+                                                        value="{tableModel>ResnForDamage}"
+                                                        selectedKey="{tableModel>ResnForDamage}"
+                                                        items="{path: 'F4JSONModel>/DAMAGE_REASON'}"
+                                                    >
+                                                        <core:Item
+                                                            key="{F4JSONModel>value1}"
+                                                            text="{F4JSONModel>value1}"
+                                                        />
+                                                    </m:ComboBox>
+                                                    <!-- Bin Location Input Field -->
+                                                    <m:ComboBox
+                                                        change="onBinLocationChange"
+                                                        value="{tableModel>BinLocation}"
+                                                        selectedKey="{tableModel>BinLocation}"
+                                                        items="{path: '/BinLocationValueHelp'}"
+                                                    >
+                                                        <core:Item
+                                                            key="{BinLocation}"
+                                                            text="{BinLocation}"
+                                                        />
+                                                    </m:ComboBox>
+                                                </m:cells>
+                                            </m:ColumnListItem>
+                                        </m:items>
+                                    </m:Table>
+                                </m:ScrollContainer>
                             </m:VBox>
-						</blocks>
-					</ObjectPageSubSection>
-				</subSections>
-                 
-			</ObjectPageSection>
-        <ObjectPageSection titleUppercase="false">
-         <!-- Already Docked Items -->
-				 <subSections >
-					<ObjectPageSubSection titleUppercase="false" title="{i18n>dockedTitle}"> 
-                    <blocks >
-                    <m:VBox>
-                    <m:Table    
-                            selectionChange="onSelectAsset"
-                            id="idDockedTable"
-                            sticky="HeaderToolbar,ColumnHeaders"
-                            inset="false"
-                            mode="MultiSelect"
-                            width="auto"
-                            items="{
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+            <ObjectPageSection titleUppercase="false">
+                <!-- Already Docked Items -->
+                <subSections>
+                    <ObjectPageSubSection
+                        titleUppercase="false"
+                        title="{i18n>dockedTitle}"
+                    >
+                        <blocks>
+                            <m:VBox>
+                                <m:ScrollContainer
+                                    horizontal="true"
+                                    vertical="false"
+                                    width="100%"
+                                    height="auto"
+                                >
+                                    <m:Table
+                                        growing="true"
+                                        growingScrollToLoad="true"
+                                        fixedLayout="false"
+                                        class="sapUiTableHorizontalScroll"
+                                        selectionChange="onSelectAsset"
+                                        id="idDockedTable"
+                                        sticky="HeaderToolbar,ColumnHeaders"
+                                        inset="false"
+                                        mode="MultiSelect"
+                                        width="auto"
+                                        items="{
                                 path: 'GlobalDockedModel>/AlreadyDockedDetails'
-                            }">
-                              <m:headerToolbar>
-                                <m:Toolbar>
-                                  <m:HBox justifyContent="SpaceBetween" width="100%">
-                                    
-                                    <m:HBox>
-                                    <m:Title text="{i18n>dockedTitle}" level="H2"/>
-                                    </m:HBox>
-                                        <m:HBox >
-                                         <!-- Edit Button (visible when editMode false) -->
-                                            <m:Button text="{i18n>edit}" icon="sap-icon://edit" type="Default" press="onDockedEditPress" visible="{= !${GlobalDockedModel>/editMode} }"/>
-                                            <!-- Save Button (visible when editMode true) -->
-                                            <m:Button text="{i18n>saveConfirm}" type="Emphasized" press="onDockedSaveConfirmPress" visible="{= ${GlobalDockedModel>/editMode} }"/>
-                                            <!-- Cancel Button (visible when editMode true) -->
-                                            <m:Button text="{i18n>cancel}" type="Default" press="onDockedEditCancelPress" class="sapUiSmallMarginBegin" visible="{= ${GlobalDockedModel>/editMode} }"/>
-                                            <m:Button text="{i18n>export}" type="Emphasized" press="onExportPress" class="sapUiSmallMarginBegin"/>
-                                            </m:HBox>
-                                        </m:HBox>
-                                </m:Toolbar>
-                            </m:headerToolbar>
-                            <m:columns>
-                                <m:Column><m:Text text="{i18n>wayBillNo}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>qty}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>unit}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>damage}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>damageReason}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>binLocation}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>cName}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>dockingDays}" /></m:Column>
-                                <!-- <m:Column><m:Text text="{i18n>attachment}" /></m:Column> -->
-                                <m:Column><m:Text text="{i18n>dockedby}" /></m:Column>
-                                <m:Column ><m:Text text="{i18n>dockedTime}" /></m:Column>
-                                <m:Column width="10em"><m:Text text="{i18n>dockedDate}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>confBy}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>confDate}" /></m:Column>
-                                <m:Column><m:Text text="{i18n>status}" /></m:Column>
-                            </m:columns>
+                            }"
+                                    >
+                                        <m:headerToolbar>
+                                            <m:Toolbar>
+                                                <m:HBox
+                                                    justifyContent="SpaceBetween"
+                                                    width="100%"
+                                                >
+                                                    <m:HBox>
+                                                        <m:Title
+                                                            text="{i18n>dockedTitle}"
+                                                            level="H2"
+                                                        />
+                                                    </m:HBox>
+                                                    <m:HBox>
+                                                        <!-- Edit Button (visible when editMode false) -->
+                                                        <m:Button
+                                                            text="{i18n>edit}"
+                                                            icon="sap-icon://edit"
+                                                            type="Default"
+                                                            press="onDockedEditPress"
+                                                            visible="{= !${tableModel>/editMode} }"
+                                                        />
+                                                        <!-- Save Button (visible when editMode true) -->
+                                                        <m:Button
+                                                            text="{i18n>saveConfirm}"
+                                                            type="Emphasized"
+                                                            press="onDockedSaveConfirmPress"
+                                                            visible="{= ${tableModel>/editMode} }"
+                                                        />
+                                                        <!-- Cancel Button (visible when editMode true) -->
+                                                        <m:Button
+                                                            text="{i18n>cancel}"
+                                                            type="Default"
+                                                            press="onDockedEditCancelPress"
+                                                            class="sapUiSmallMarginBegin"
+                                                            visible="{= ${tableModel>/editMode} }"
+                                                        />
+                                                        <m:Button
+                                                            text="{i18n>export}"
+                                                            type="Emphasized"
+                                                            press="onExportPress"
+                                                            class="sapUiSmallMarginBegin"
+                                                        />
+                                                    </m:HBox>
+                                                </m:HBox>
+                                            </m:Toolbar>
+                                        </m:headerToolbar>
+                                        <m:columns>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="7em"
+                                                    text="{i18n>wayBillNo}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>qty}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>unit}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>damage}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>damageReason}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>binLocation}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>cName}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    text="{i18n>dockingDays}"
+                                                />
+                                            </m:Column>
+                                            <!-- <m:Column><m:Text text="{i18n>attachment}" /></m:Column> -->
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>dockedby}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="7em"
+                                                    text="{i18n>dockedTime}"
+                                                />
+                                            </m:Column>
+                                            <m:Column width="10em">
+                                                <m:Text
+                                                    text="{i18n>dockedDate}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>confBy}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="7em"
+                                                    text="{i18n>confDate}"
+                                                />
+                                            </m:Column>
+                                            <m:Column>
+                                                <m:Text
+                                                    width="5em"
+                                                    text="{i18n>status}"
+                                                />
+                                            </m:Column>
+                                        </m:columns>
 
-                            <m:items>
-                                <m:ColumnListItem>
-                                    <m:cells>
-                                            <!-- Way Bill No. Text Field -->
-                                        <m:Text text="{GlobalDockedModel>WayBillNum}" />
-                                        
-                                         <!-- Quantity Input Field -->
-                                           
-                                            <m:Input value="{GlobalDockedModel>Quantity}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                         
-                                         <!-- Unit of Measure Input Field -->
-                                          
-                                            <m:Input value="{GlobalDockedModel>Uom}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                        
-                                            <!-- Damage Input Field -->
-                                         
-                                            <m:Input value="{GlobalDockedModel>DamageInd}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                        
-                                            <!-- Damage Reason Input Field -->
-                                          
-                                            <m:Input value="{GlobalDockedModel>ResnForDamage}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                        
-                                             <!-- Bin Location Input Field -->
-                                          
-                                            <m:Input value="{GlobalDockedModel>BinLocation}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                        
-                                            <!-- Carrier Input Field -->    
-                                           
-                                            <m:Input value="{GlobalDockedModel>CarrierHdr}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                        
-                                         <!-- DID Text Field -->
-                                         <m:Text text="{GlobalDockedModel>DaysInDockng}" />
+                                        <m:items>
+                                            <m:ColumnListItem>
+                                                <m:cells>
+                                                    <!-- Way Bill No. Text Field -->
+                                                    <m:Text
+                                                        text="{GlobalDockedModel>WayBillNum}"
+                                                    />
 
-                                         <!-- Docked By Text Field -->
-                                         <m:Text text="{GlobalDockedModel>DockedBy}" />
-                                        
-                                         <!-- Docked Date Input Field -->
-                                         
-                                            <m:Input value="{GlobalDockedModel>DockedTime}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE' }"/>
-                                        
-                                         <!-- Docked Time Input Field -->
+                                                    <!-- Quantity Input Field -->
 
-                                            <m:DatePicker id="editValueDateIdDP"  placeholder="{i18n>EnterDate}" class="sapUiSmallMarginBottom" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}" value="{
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>Quantity}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- Unit of Measure Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>Uom}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- Damage Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>DamageInd}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- Damage Reason Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>ResnForDamage}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- Bin Location Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>BinLocation}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- Carrier Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>CarrierHdr}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- DID Text Field -->
+                                                    <m:Text
+                                                        text="{GlobalDockedModel>DaysInDockng}"
+                                                    />
+
+                                                    <!-- Docked By Text Field -->
+                                                    <m:Text
+                                                        text="{GlobalDockedModel>DockedBy}"
+                                                    />
+
+                                                    <!-- Docked Date Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>DockedTime}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED' }"
+                                                    />
+
+                                                    <!-- Docked Time Input Field -->
+
+                                                    <m:DatePicker
+                                                        id="editValueDateIdDP"
+                                                        placeholder="{i18n>EnterDate}"
+                                                        class=""
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                        value="{
                                                 'path':'GlobalDockedModel>DockedDate',
                                                 'type':'sap.ui.model.type.Date',
                                                 'formatOptions': {
                                                 'pattern': 'yyyy-MM-dd'
-                                                }}" />
-                                         
-                                         <!-- Confirmed By Input Field -->
-                                          
-                                            <m:Input value="{GlobalDockedModel>ConfrmBy}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                         
-                                         <!-- Confirmed Date Input Field -->
+                                                }}"
+                                                    />
 
-                                            <m:Input value="{GlobalDockedModel>CinfrmDate}" enabled="{= ${GlobalDockedModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVE'}"/>
-                                         
-                                         <m:Text text="{GlobalDockedModel>Status}" />
-                                       
-                                    </m:cells>
-                                </m:ColumnListItem>
-                            </m:items>
-                        </m:Table>
+                                                    <!-- Confirmed By Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>ConfrmBy}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <!-- Confirmed Date Input Field -->
+
+                                                    <m:Input
+                                                        value="{GlobalDockedModel>CinfrmDate}"
+                                                        enabled="{= ${tableModel>/editMode} &amp;&amp; ${GlobalDockedModel>Status} === 'SAVED'}"
+                                                    />
+
+                                                    <m:Text
+                                                        text="{GlobalDockedModel>Status}"
+                                                    />
+                                                </m:cells>
+                                            </m:ColumnListItem>
+                                        </m:items>
+                                    </m:Table>
+                                </m:ScrollContainer>
                             </m:VBox>
-						</blocks>
-					</ObjectPageSubSection>
-				</subSections>
-			</ObjectPageSection>
-		</sections>
-      <footer>
-            <m:OverflowToolbar visible="{= ${GlobalDockedModel>/selectedSection} === '__section1' }">
-                <m:ToolbarSpacer/>
-                <m:Button type="Accept" text="{i18n>save}" press="onSavePress"/>
-                <m:Button type="Emphasized" text="{i18n>confirm}" enabled="{= ${GlobalDockedModel>/save} }" press="onConfirmPress"/>
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+        </sections>
+        <footer>
+            <m:OverflowToolbar
+                visible="{= ${GlobalDockedModel>/selectedSection} === '__section1' }"
+            >
+                <m:ToolbarSpacer />
+                <m:Button
+                    type="Accept"
+                    text="{i18n>save}"
+                    press="onSavePress"
+                />
+                <m:Button
+                    type="Emphasized"
+                    text="{i18n>confirm}"
+                    press="onConfirmPress"
+                />
             </m:OverflowToolbar>
         </footer>
-	</ObjectPageLayout>
+    </ObjectPageLayout>
 </mvc:View>

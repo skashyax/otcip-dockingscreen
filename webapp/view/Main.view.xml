@@ -1,32 +1,86 @@
-<mvc:View controllerName="com.intel.otcip.dockingscreen.controller.Main"
-    	displayBlock="true"
-        xmlns:mvc="sap.ui.core.mvc"
-        xmlns:ndc="sap.ndc"
-        xmlns:core="sap.ui.core"
-        height="100%"
-    xmlns="sap.m">
-     <Panel headerText="{i18n>homeTitle}" class="sapUiResponsiveMargin" width="auto" expandable="false" backgroundDesign="Translucent">
-                <content>
-                    <VBox width="auto" justifyContent="SpaceBetween" class="sapUiSmallMargin">
-                     
-                        <Label text="{i18n>warehouseNo}" labelFor="warehouseInput" />
- 
-                        <ComboBox id="warehouseComboBox" placeholder="{i18n>warehousePlaceholder}" selectedKey="{GlobalDockedModel>/WarehouseNo}" change="onWarehouseChange" items="{path: '/ZCDS_I_OTC_DCSCRN_WAREHSVH'}">
-                            <core:Item key="{Warehouse}" text="{Warehouse}" />
-                        </ComboBox>
- 
-                        <Label text="{i18n>scanRMA}" labelFor="rmaInput" class="sapUiSmallMarginTop" />
-                        
-                        <HBox>
-                        <Input id="rmaInputId" placeholder="{i18n>rmaPlaceholder}" showValueHelp="true" valueHelpRequest="onRmaValueHelp" liveChange="onRMALiveChange" required="true" value="{GlobalDockedModel>/RMA}" maxLength="10" />
-                     
-                        </HBox>
-                         
-                        <HBox class="sapUiSmallMarginTop" justifyContent="End">
-                            <Button text="{i18n>clearButton}" type="Transparent" press="onPressClear" width="150px" />
-                            <Button text="{i18n>submit}" enabled="{GlobalDockedModel>/submitEnabled}" id="submitButton" type="Emphasized" press="onSubmitPress" class="sapUiTinyMarginBegin" width="150px" />
-                        </HBox>
-                    </VBox>
-                </content>
-            </Panel>
+<mvc:View
+    controllerName="com.intel.otcip.dockingscreen.controller.Main"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:ndc="sap.ndc"
+    xmlns:core="sap.ui.core"
+    height="100%"
+    xmlns="sap.m"
+>
+    <Panel
+        headerText="{i18n>homeTitle}"
+        class="sapUiResponsiveMargin"
+        width="auto"
+        expandable="false"
+        backgroundDesign="Translucent"
+    >
+        <content>
+            <VBox
+                width="auto"
+                justifyContent="SpaceBetween"
+                class="sapUiSmallMargin"
+            >
+                <Label
+                    text="{i18n>warehouseNo}"
+                    labelFor="warehouseInput"
+                    required="true"
+                />
+
+                <Select
+                    id="warehouseSelect"
+                    selectedKey="{GlobalDockedModel>/WarehouseNo}"
+                    change="onWarehouseChange"
+                    forceSelection="false"
+                    items="{path: '/WarehouseValueHelp'}"
+                    width="15em"
+                >
+                   
+                    <core:Item
+                        key="{Warehouse}"
+                        text="{Warehouse}"
+                    />
+                </Select>
+                <Label
+                    text="{i18n>scanRMA}"
+                    labelFor="rmaInput"
+                    class="sapUiSmallMarginTop"
+                    required="true"
+                />
+
+                <HBox>
+                    <Input
+                        id="rmaInputId"
+                        placeholder="{i18n>rmaPlaceholder}"
+                        showValueHelp="true"
+                        valueHelpRequest="onRmaValueHelp"
+                        liveChange="onRMALiveChange"
+                        required="true"
+                        value="{GlobalDockedModel>/RMA}"
+                        maxLength="10"
+                    />
+                </HBox>
+
+                <HBox
+                    class="sapUiSmallMarginTop"
+                    justifyContent="End"
+                >
+                    <Button
+                        text="{i18n>clearButton}"
+                        type="Transparent"
+                        press="onPressClear"
+                        width="150px"
+                    />
+                    <Button
+                        text="{i18n>submit}"
+                        enabled="{GlobalDockedModel>/submitEnabled}"
+                        id="submitButton"
+                        type="Emphasized"
+                        press="onSubmitPress"
+                        class="sapUiTinyMarginBegin"
+                        width="150px"
+                    />
+                </HBox>
+            </VBox>
+        </content>
+    </Panel>
 </mvc:View>
